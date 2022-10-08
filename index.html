@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>原神抽卡模拟</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: url(img/bg.png) no-repeat;
+            background-size: cover;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            flex-direction: column;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+
+        .banner {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100vw;
+            height: 493px;
+            overflow:hidden;
+        }
+
+        .img.current{
+            
+            width: 950px;
+            height: 493px;
+        }
+
+        .img.left{
+            position: absolute;
+            left: -550px;
+            width: 770px;
+            height: 400px;
+        }
+       .img.right{
+            position: absolute;
+            right: -550px;
+            width: 770px;
+            height: 400px;
+        }
+        
+
+        .buttom {
+            display: flex;
+            align-items: center;
+            justify-content: space-evenly;
+            flex-wrap: wrap;
+            width: 100vw;
+        }
+
+        .btn {
+            position: relative;
+            width: 176px;
+            height: 54px;
+            text-align: center;
+            line-height: 50px;
+            font-size: 20px;
+            font-weight: bold;
+            color: rgb(211, 180, 43);
+            border: 2px solid rgb(211, 180, 43);
+        }
+
+        .btn p {
+            position: relative;
+            display: block;
+            background-color: white;
+            z-index: 2;
+        }
+
+        .btn:hover {
+            cursor: pointer;
+        }
+
+        .btn:active,
+        .btn:active p,
+        .btn:active #left,
+        .btn:active #right {
+            background-color: rgb(235, 235, 235);
+        }
+
+        #left {
+            width: 44px;
+            height: 44px;
+            background-color: white;
+            position: absolute;
+            left: -23px;
+            top: 3px;
+            border-radius: 50%;
+            z-index: 1;
+            border: 2px solid rgb(211, 180, 43);
+        }
+
+        #right {
+            width: 44px;
+            height: 44px;
+            background-color: white;
+            position: absolute;
+            right: -23px;
+            top: 3px;
+            border-radius: 50%;
+            z-index: 1;
+            border: 2px solid rgb(211, 180, 43);
+
+        }
+
+        .lishi {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 120px;
+            height: 32px;
+            background-color: rgb(224, 224, 224);
+            border-radius: 20px;
+            font-weight: bold;
+            color: rgb(109, 109, 109);
+            transition: all 0.2s;
+        }
+
+        .lishi:hover {
+            cursor: pointer;
+            border: white 3px solid;
+        }
+
+        .lishi:active {
+            border: rgb(182, 181, 181) 3px solid;
+            background-color: wheat;
+        }
+        .card{
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 10;
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+        .card-box{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            width: 100vw;
+            height: 100vh;
+            padding:0 17vw;
+            overflow: hidden;
+        }
+
+        .card .card-item {
+            width: 9%;
+            height: 60vh;
+            background-color: white;
+            transform: translate(1500px);
+            border-radius: 30%;
+            transition: all 0.5s;
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+        }
+
+        .card .card-item.current {
+            transform: translate(0);
+        }
+
+        .x {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            right: 5vw;
+            top: 5vh;
+            font-size: 40px;
+            color: rgb(0, 0, 0);
+            border-radius: 20px;
+            background-color: rgb(201, 201, 201);
+            border: 3px solid rgb(155, 153, 153);
+            line-height: 25px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .x:hover {
+            cursor: pointer;
+        }
+
+        .bofang {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 20;
+        }
+
+        .bofang video {
+            width: 100vw;
+        }
+
+        .skip {
+            position: fixed;
+            color: white;
+            z-index: 30;
+            right: 5vw;
+            top: 5vh;
+        }
+
+        .skip:hover {
+            cursor: pointer;
+            color: rgb(201, 201, 201);
+        }
+
+        .choushu {
+            position: absolute;
+            right: 310px;
+            top: 10px;
+            width: 100px;
+            height: 60px;
+            background-color: rgba(182, 181, 181, 0.8);
+            color: rgb(91, 203, 255);
+            font-size: 32px;
+            text-align: center;
+            line-height: 60px;
+            border-radius: 5px;
+        }
+
+        .zongchoushu {
+            width: 200px;
+            height: 60px;
+            background-color: rgba(182, 181, 181, 0.8);
+            color: rgb(255, 255, 255);
+            font-size: 32px;
+            text-align: center;
+            line-height: 60px;
+            border-radius: 15px;
+        }
+
+        .ckls {
+            position: fixed;
+            display: none;
+            justify-content: center;
+            align-items: baseline;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: auto;
+            min-height: 100vh;
+            z-index: 50;
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+
+        .cklishi {
+            display: flex;
+            flex-wrap: wrap;
+            left: 25vw;
+            top: 0;
+            width: 76vw;
+            height: auto;
+            background-color: rgb(255, 255, 255);
+            padding: 50px 8vw;
+            border-radius: 15px;
+        }
+
+        .cklishi p {
+            text-indent: 2em;
+        }
+
+        .close {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            right: 5vw;
+            top: 5vh;
+            font-size: 40px;
+            color: rgb(0, 0, 0);
+            border-radius: 20px;
+            background-color: rgb(201, 201, 201);
+            border: 3px solid rgb(155, 153, 153);
+            line-height: 25px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .close:hover {
+            cursor: pointer;
+        }
+
+        .red {
+            color: rgb(255, 45, 45);
+        }
+
+        .green {
+            color: rgb(41, 161, 57);
+        }
+
+        .yellow {
+            color: rgb(199, 196, 45);
+        }
+
+        .blue {
+            color: rgb(4, 168, 223);
+        }
+
+        .purple {
+            color: rgb(170, 65, 170);
+        }
+
+        .lightblue {
+            color: rgb(0, 227, 243);
+        }
+        .leftbtn{
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background-image: url(img/向左.png);
+        }
+
+        @media (max-width:950px) {
+            .banner img{
+                width: 100vw;
+                height: auto;
+            }
+            .card .card-item {
+                width: 52px;
+                height: 250px;
+            }
+        }
+        @media (max-width:750px) {
+            .card .card-item {
+                width: 52px;
+                height: 250px;
+            }
+        }
+        @media (max-width:500px) {
+            .choushu{
+                width: 50px;
+                height: 40px;
+                line-height: 40px;
+            }
+           .card-box{
+               padding: 12vw;
+           }
+            .card .card-item {
+                width: 17%;
+                height: 250px;
+            }
+        }
+        @media (max-width:300px) {
+           .card-box{
+               padding: 7vw;
+           }
+            .card .card-item {
+                width: 17%;
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="classif">
+            <div class="zongchoushu">
+                总抽数：0
+            </div>
+            <div class="characters">
+
+            </div>
+            <div class="weapons">
+
+            </div>
+            <div class="standard">
+
+            </div>
+        </div>
+        <div class="banner">
+            <div class="choushu">0</div>
+            <img src="img/Hutao-banner.png" alt="banner" class="img current">
+            <div class="leftbtn"></div>
+            <div class="rightbtn"></div>
+        </div>
+        <div class="buttom">
+            <div class="lishi" onclick="choukalishi()">
+                <p>历史记录</p>
+            </div>
+            <div class="btn">
+                <div id="left"></div>
+                <p>祈愿10次</p>
+                <div id="right"></div>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-box">
+            <div class="card-item"></div>
+            <div class="card-item"></div>
+            <div class="card-item"></div>
+            <div class="card-item"></div>
+            <div class="card-item"></div>
+            <div class="card-item"></div>
+            <div class="card-item"></div>
+            <div class="card-item"></div>
+            <div class="card-item"></div>
+            <div class="card-item"></div>
+            <div class="x">
+                x
+            </div>
+        </div>
+        
+    </div>
+    <div class="ckls">
+        <div class="cklishi">
+
+        </div>
+        <div class="close" onclick="cklsclose()">
+            x
+        </div>
+    </div>
+    <div class="bofang">
+        <video src="video/4star.mp4"  autoplay onended="jieshu()" id="video">
+        </video>
+        <div class="skip" onclick = "ended()">跳过</div>
+    </div>
+    <script src="JS/script.js"></script>
+</body>
+
+</html>
